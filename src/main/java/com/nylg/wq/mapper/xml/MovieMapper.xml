@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nylg.wq.mapper.MovieMapper">
+  <resultMap id="BaseResultMap" type="com.nylg.wq.pojo.Movie">
+    <id column="movie_id" jdbcType="BIGINT" property="movieId" />
+    <result column="movie_cname" jdbcType="VARCHAR" property="movieCname" />
+    <result column="movie_fname" jdbcType="VARCHAR" property="movieFname" />
+    <result column="movie_actor" jdbcType="VARCHAR" property="movieActor" />
+    <result column="movie_director" jdbcType="VARCHAR" property="movieDirector" />
+    <result column="movie_detail" jdbcType="VARCHAR" property="movieDetail" />
+    <result column="movie_duration" jdbcType="VARCHAR" property="movieDuration" />
+    <result column="movie_type" jdbcType="VARCHAR" property="movieType" />
+    <result column="movie_score" jdbcType="DOUBLE" property="movieScore" />
+    <result column="movie_totalTicket" jdbcType="INTEGER" property="movieTotalticket" />
+    <result column="movie_commentCount" jdbcType="BIGINT" property="movieCommentcount" />
+    <result column="movie_putDate" jdbcType="TIMESTAMP" property="moviePutdate" />
+    <result column="movie_country" jdbcType="VARCHAR" property="movieCountry" />
+    <result column="movie_picture" jdbcType="VARCHAR" property="moviePicture" />
+    <result column="movie_state" jdbcType="INTEGER" property="movieState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    movie_id, movie_cname, movie_fname, movie_actor, movie_director, movie_detail, movie_duration, 
+     movie_type, movie_score, movie_totalTicket, movie_commentCount, movie_putDate,
+    movie_country, movie_picture, movie_state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from movie
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectMovieList"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+  </select>
+  <select id="selectMovieByState" parameterType="java.lang.Integer"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+    where movie_state = #{movieState}
+  </select>
+  <select id="selectMovieByScore" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+    where movie_state = 1
+    order by movie_score
+    desc
+  </select>
+  <select id="findMovieByType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+    where movie_state = 1
+    and movie_type like '%${type}%'
+  </select>
+  <select id="selectMovieByDate"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+    where movie_state = 1
+    order by movie_putDate
+    desc
+  </select>
+  <select id="selectMovieByName" parameterType="java.lang.String"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+    where movie_cname = #{movieCname}
+  </select>
+  <select id="findMovieBySelect"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from movie
+    <where>
+      <if test="movieType != null">
+        and movie_type like '%${movieType}%'
+      </if>
+      <if test="movieCountry != null">
+       and  movie_country like '%${movieCountry}%'
+      </if>
+      <if test="moviePutdate != null">
+        and movie_putDate like '%${moviePutdate}%'
+      </if>
+      and movie_state = 1
+    </where>
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from movie
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.nylg.wq.pojo.Movie">
+    insert into movie (movie_id, movie_cname, movie_fname, 
+      movie_actor, movie_director, movie_detail, 
+      movie_duration, movie_type, movie_score,
+      movie_totalTicket, movie_commentCount, movie_putDate, 
+      movie_country, movie_picture, movie_state
+      )
+    values (#{movieId,jdbcType=BIGINT}, #{movieCname,jdbcType=VARCHAR}, #{movieFname,jdbcType=VARCHAR}, 
+      #{movieActor,jdbcType=VARCHAR}, #{movieDirector,jdbcType=VARCHAR}, #{movieDetail,jdbcType=VARCHAR}, 
+      #{movieDuration,jdbcType=VARCHAR}, #{movieType,jdbcType=VARCHAR}, #{movieScore,jdbcType=DOUBLE},
+      #{movieTotalticket,jdbcType=INTEGER}, #{movieCommentcount,jdbcType=BIGINT}, #{moviePutdate,jdbcType=TIMESTAMP},
+      #{movieCountry,jdbcType=VARCHAR}, #{moviePicture,jdbcType=VARCHAR}, #{movieState,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.nylg.wq.pojo.Movie">
+    insert into movie
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="movieId != null">
+        movie_id,
+      </if>
+      <if test="movieCname != null">
+        movie_cname,
+      </if>
+      <if test="movieFname != null">
+        movie_fname,
+      </if>
+      <if test="movieActor != null">
+        movie_actor,
+      </if>
+      <if test="movieDirector != null">
+        movie_director,
+      </if>
+      <if test="movieDetail != null">
+        movie_detail,
+      </if>
+      <if test="movieDuration != null">
+        movie_duration,
+      </if>
+      <if test="movieType != null">
+         movie_type,
+      </if>
+      <if test="movieScore != null">
+        movie_score,
+      </if>
+      <if test="movieTotalticket != null">
+        movie_totalTicket,
+      </if>
+      <if test="movieCommentcount != null">
+        movie_commentCount,
+      </if>
+      <if test="moviePutdate != null">
+        movie_putDate,
+      </if>
+      <if test="movieCountry != null">
+        movie_country,
+      </if>
+      <if test="moviePicture != null">
+        movie_picture,
+      </if>
+      <if test="movieState != null">
+        movie_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="movieId != null">
+        #{movieId,jdbcType=BIGINT},
+      </if>
+      <if test="movieCname != null">
+        #{movieCname,jdbcType=VARCHAR},
+      </if>
+      <if test="movieFname != null">
+        #{movieFname,jdbcType=VARCHAR},
+      </if>
+      <if test="movieActor != null">
+        #{movieActor,jdbcType=VARCHAR},
+      </if>
+      <if test="movieDirector != null">
+        #{movieDirector,jdbcType=VARCHAR},
+      </if>
+      <if test="movieDetail != null">
+        #{movieDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="movieDuration != null">
+        #{movieDuration,jdbcType=VARCHAR},
+      </if>
+      <if test="movieType != null">
+        #{movieType,jdbcType=VARCHAR},
+      </if>
+      <if test="movieScore != null">
+        #{movieScore,jdbcType=DOUBLE},
+      </if>
+      <if test="movieTotalticket != null">
+        #{movieTotalticket,jdbcType=INTEGER},
+      </if>
+      <if test="movieCommentcount != null">
+        #{movieCommentcount,jdbcType=BIGINT},
+      </if>
+      <if test="moviePutdate != null">
+        #{moviePutdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="movieCountry != null">
+        #{movieCountry,jdbcType=VARCHAR},
+      </if>
+      <if test="moviePicture != null">
+        #{moviePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="movieState != null">
+        #{movieState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nylg.wq.pojo.Movie">
+    update movie
+    <set>
+      <if test="movieCname != null">
+        movie_cname = #{movieCname,jdbcType=VARCHAR},
+      </if>
+      <if test="movieFname != null">
+        movie_fname = #{movieFname,jdbcType=VARCHAR},
+      </if>
+      <if test="movieActor != null">
+        movie_actor = #{movieActor,jdbcType=VARCHAR},
+      </if>
+      <if test="movieDirector != null">
+        movie_director = #{movieDirector,jdbcType=VARCHAR},
+      </if>
+      <if test="movieDetail != null">
+        movie_detail = #{movieDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="movieDuration != null">
+        movie_duration = #{movieDuration,jdbcType=VARCHAR},
+      </if>
+      <if test="movieType != null">
+         movie_type = #{movieType,jdbcType=VARCHAR},
+      </if>
+      <if test="movieScore != null">
+        movie_score = #{movieScore,jdbcType=DOUBLE},
+      </if>
+      <if test="movieTotalticket != null">
+        movie_totalTicket = #{movieTotalticket,jdbcType=INTEGER},
+      </if>
+      <if test="movieCommentcount != null">
+        movie_commentCount = #{movieCommentcount,jdbcType=BIGINT},
+      </if>
+      <if test="moviePutdate != null">
+        movie_putDate = #{moviePutdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="movieCountry != null">
+        movie_country = #{movieCountry,jdbcType=VARCHAR},
+      </if>
+      <if test="moviePicture != null">
+        movie_picture = #{moviePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="movieState != null">
+        movie_state = #{movieState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nylg.wq.pojo.Movie">
+    update movie
+    set movie_cname = #{movieCname,jdbcType=VARCHAR},
+      movie_fname = #{movieFname,jdbcType=VARCHAR},
+      movie_actor = #{movieActor,jdbcType=VARCHAR},
+      movie_director = #{movieDirector,jdbcType=VARCHAR},
+      movie_detail = #{movieDetail,jdbcType=VARCHAR},
+      movie_duration = #{movieDuration,jdbcType=VARCHAR},
+      movie_type = #{movieType,jdbcType=VARCHAR},
+      movie_score = #{movieScore,jdbcType=DOUBLE},
+      movie_totalTicket = #{movieTotalticket,jdbcType=INTEGER},
+      movie_commentCount = #{movieCommentcount,jdbcType=BIGINT},
+      movie_putDate = #{moviePutdate,jdbcType=TIMESTAMP},
+      movie_country = #{movieCountry,jdbcType=VARCHAR},
+      movie_picture = #{moviePicture,jdbcType=VARCHAR},
+      movie_state = #{movieState,jdbcType=INTEGER}
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </update>
+  <update id="updateTotallTickets">
+    update movie
+    set
+      movie_totalTicket = movie_totalTicket + #{price}
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </update>
+  <update id="delTotallTickets">
+    update movie
+    set
+      movie_totalTicket = movie_totalTicket - #{price}
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </update>
+</mapper>

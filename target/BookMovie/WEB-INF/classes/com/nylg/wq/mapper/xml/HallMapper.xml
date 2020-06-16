@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nylg.wq.mapper.HallMapper">
+  <resultMap id="BaseResultMap" type="com.nylg.wq.pojo.Hall">
+    <id column="hall_id" jdbcType="BIGINT" property="hallId" />
+    <result column="hall_name" jdbcType="VARCHAR" property="hallName" />
+    <result column="cinema_id" jdbcType="BIGINT" property="cinemaId" />
+    <result column="hall_capacity" jdbcType="INTEGER" property="hallCapacity" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    hall_id, hall_name, cinema_id, hall_capacity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hall
+    where hall_id = #{hallId,jdbcType=BIGINT}
+  </select>
+  <select id="findHallByCinemaId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from hall
+    where cinema_id = #{cinemaId,jdbcType=BIGINT}
+  </select>
+  <select id="selectHallByTwo"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from hall
+    where cinema_id = #{cinemaId,jdbcType=BIGINT}
+    and hall_name = #{hallName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from hall
+    where hall_id = #{hallId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.nylg.wq.pojo.Hall">
+    insert into hall (hall_id, hall_name, cinema_id, 
+      hall_capacity)
+    values (#{hallId,jdbcType=BIGINT}, #{hallName,jdbcType=VARCHAR}, #{cinemaId,jdbcType=BIGINT}, 
+      #{hallCapacity,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nylg.wq.pojo.Hall">
+    insert into hall
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="hallId != null">
+        hall_id,
+      </if>
+      <if test="hallName != null">
+        hall_name,
+      </if>
+      <if test="cinemaId != null">
+        cinema_id,
+      </if>
+      <if test="hallCapacity != null">
+        hall_capacity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="hallId != null">
+        #{hallId,jdbcType=BIGINT},
+      </if>
+      <if test="hallName != null">
+        #{hallName,jdbcType=VARCHAR},
+      </if>
+      <if test="cinemaId != null">
+        #{cinemaId,jdbcType=BIGINT},
+      </if>
+      <if test="hallCapacity != null">
+        #{hallCapacity,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nylg.wq.pojo.Hall">
+    update hall
+    <set>
+      <if test="hallName != null">
+        hall_name = #{hallName,jdbcType=VARCHAR},
+      </if>
+      <if test="cinemaId != null">
+        cinema_id = #{cinemaId,jdbcType=BIGINT},
+      </if>
+      <if test="hallCapacity != null">
+        hall_capacity = #{hallCapacity,jdbcType=INTEGER},
+      </if>
+    </set>
+    where hall_id = #{hallId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nylg.wq.pojo.Hall">
+    update hall
+    set hall_name = #{hallName,jdbcType=VARCHAR},
+      cinema_id = #{cinemaId,jdbcType=BIGINT},
+      hall_capacity = #{hallCapacity,jdbcType=INTEGER}
+    where hall_id = #{hallId,jdbcType=BIGINT}
+  </update>
+</mapper>

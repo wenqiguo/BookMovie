@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nylg.wq.mapper.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.nylg.wq.pojo.Comment">
+    <id column="comment_id" jdbcType="BIGINT" property="commentId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="comment_content" jdbcType="VARCHAR" property="commentContent" />
+    <result column="movie_id" jdbcType="BIGINT" property="movieId" />
+    <result column="comment_time" jdbcType="VARCHAR" property="commentTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    comment_id, user_id, comment_content, movie_id, comment_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comment
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </select>
+    <select id="selectByMovieAndUserId"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from comment
+        where user_id = #{user_id,jdbcType=BIGINT}
+        and movie_id = #{movie_id,jdbcType=BIGINT}
+    </select>
+  <select id="findCommentsByMovieId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from comment
+  where movie_id = #{movieId,jdbcType=BIGINT}
+</select>
+  <select id="findCommentsByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    comment.*
+    from comment , user
+    where comment.user_id = user.user_id
+    and user.user_name like '%${value}%'
+  </select>
+  <select id="lookCommentByPage"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from comment
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from comment
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.nylg.wq.pojo.Comment">
+    insert into comment (comment_id, user_id, comment_content, 
+      movie_id, comment_time)
+    values (#{commentId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{commentContent,jdbcType=VARCHAR}, 
+      #{movieId,jdbcType=BIGINT}, #{commentTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nylg.wq.pojo.Comment">
+    insert into comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="commentContent != null">
+        comment_content,
+      </if>
+      <if test="movieId != null">
+        movie_id,
+      </if>
+      <if test="commentTime != null">
+        comment_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="commentContent != null">
+        #{commentContent,jdbcType=VARCHAR},
+      </if>
+      <if test="movieId != null">
+        #{movieId,jdbcType=BIGINT},
+      </if>
+      <if test="commentTime != null">
+        #{commentTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nylg.wq.pojo.Comment">
+    update comment
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="commentContent != null">
+        comment_content = #{commentContent,jdbcType=VARCHAR},
+      </if>
+      <if test="movieId != null">
+        movie_id = #{movieId,jdbcType=BIGINT},
+      </if>
+      <if test="commentTime != null">
+        comment_time = #{commentTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nylg.wq.pojo.Comment">
+    update comment
+    set user_id = #{userId,jdbcType=BIGINT},
+      comment_content = #{commentContent,jdbcType=VARCHAR},
+      movie_id = #{movieId,jdbcType=BIGINT},
+      comment_time = #{commentTime,jdbcType=VARCHAR}
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+</mapper>

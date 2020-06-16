@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nylg.wq.mapper.ScheduleMapper">
+  <resultMap id="BaseResultMap" type="com.nylg.wq.pojo.Schedule">
+    <id column="schedule_id" jdbcType="BIGINT" property="scheduleId" />
+    <result column="hall_id" jdbcType="BIGINT" property="hallId" />
+    <result column="movie_id" jdbcType="BIGINT" property="movieId" />
+    <result column="schedule_startTime" jdbcType="VARCHAR" property="scheduleStartTime" />
+    <result column="schedule_price" jdbcType="INTEGER" property="schedulePrice" />
+    <result column="schedule_seatRemain" jdbcType="INTEGER" property="scheduleSeatremain" />
+    <result column="schedule_state" jdbcType="INTEGER" property="scheduleState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    schedule_id, hall_id, movie_id, schedule_startTime, schedule_price, schedule_seatRemain, 
+    schedule_state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from schedule
+    where schedule_id = #{scheduleId,jdbcType=BIGINT}
+  </select>
+  <select id="findSchudelByMovieId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from schedule
+    where movie_id = #{movieId,jdbcType=BIGINT}
+    and schedule_startTime > (select date_add(now(),interval 30 minute));
+    and schedule_state = 1
+  </select>
+  <select id="findSchudelByMovieAndDate"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from schedule
+    where movie_id = #{movieId,jdbcType=BIGINT}
+    and schedule_startTime like '%${date}%'
+    and schedule_startTime > (select date_add(now(),interval 30 minute))
+    and schedule_state = 1
+  </select>
+  <select id="selectScheduleByPage" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from schedule
+    where schedule_state = #{scheduleState,jdbcType=BIGINT}
+  </select>
+  <select id="findScedulePageByMovieName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select `schedule`.* from `schedule`,movie  where movie.movie_id = `schedule`.movie_id and movie_cname like '%${value}%'
+  </select>
+
+
+  <insert id="insert" parameterType="com.nylg.wq.pojo.Schedule">
+    insert into schedule (schedule_id, hall_id, movie_id, 
+      schedule_startTime, schedule_price, schedule_seatRemain, 
+      schedule_state)
+    values (#{scheduleId,jdbcType=BIGINT}, #{hallId,jdbcType=BIGINT}, #{movieId,jdbcType=BIGINT}, 
+      #{scheduleStartTime,jdbcType=VARCHAR}, #{schedulePrice,jdbcType=INTEGER}, #{scheduleSeatremain,jdbcType=INTEGER}, 
+      #{scheduleState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nylg.wq.pojo.Schedule">
+    insert into schedule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="scheduleId != null">
+        schedule_id,
+      </if>
+      <if test="hallId != null">
+        hall_id,
+      </if>
+      <if test="movieId != null">
+        movie_id,
+      </if>
+      <if test="scheduleStartTime != null">
+        schedule_startTime,
+      </if>
+      <if test="schedulePrice != null">
+        schedule_price,
+      </if>
+      <if test="scheduleSeatremain != null">
+        schedule_seatRemain,
+      </if>
+      <if test="scheduleState != null">
+        schedule_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="scheduleId != null">
+        #{scheduleId,jdbcType=BIGINT},
+      </if>
+      <if test="hallId != null">
+        #{hallId,jdbcType=BIGINT},
+      </if>
+      <if test="movieId != null">
+        #{movieId,jdbcType=BIGINT},
+      </if>
+      <if test="scheduleStartTime != null">
+        #{scheduleStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="schedulePrice != null">
+        #{schedulePrice,jdbcType=INTEGER},
+      </if>
+      <if test="scheduleSeatremain != null">
+        #{scheduleSeatremain,jdbcType=INTEGER},
+      </if>
+      <if test="scheduleState != null">
+        #{scheduleState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nylg.wq.pojo.Schedule">
+    update schedule
+    <set>
+      <if test="hallId != null">
+        hall_id = #{hallId,jdbcType=BIGINT},
+      </if>
+      <if test="movieId != null">
+        movie_id = #{movieId,jdbcType=BIGINT},
+      </if>
+      <if test="scheduleStartTime != null">
+        schedule_startTime = #{scheduleStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="schedulePrice != null">
+        schedule_price = #{schedulePrice,jdbcType=INTEGER},
+      </if>
+      <if test="scheduleSeatremain != null">
+        schedule_seatRemain = #{scheduleSeatremain,jdbcType=INTEGER},
+      </if>
+      <if test="scheduleState != null">
+        schedule_state = #{scheduleState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where schedule_id = #{scheduleId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nylg.wq.pojo.Schedule">
+    update schedule
+    set hall_id = #{hallId,jdbcType=BIGINT},
+      movie_id = #{movieId,jdbcType=BIGINT},
+      schedule_startTime = #{scheduleStartTime,jdbcType=VARCHAR},
+      schedule_price = #{schedulePrice,jdbcType=INTEGER},
+      schedule_seatRemain = #{scheduleSeatremain,jdbcType=INTEGER},
+      schedule_state = #{scheduleState,jdbcType=INTEGER}
+    where schedule_id = #{scheduleId,jdbcType=BIGINT}
+  </update>
+  <update id="saleTicket">
+    update schedule
+    set
+      schedule_seatRemain = schedule_seatRemain - #{num}
+    where schedule_id = #{sceduleId,jdbcType=BIGINT}
+  </update>
+  <update id="addTicket">
+    update schedule
+    set
+      schedule_seatRemain = schedule_seatRemain + 1
+    where schedule_id = #{sceduleId,jdbcType=BIGINT}
+  </update>
+  <update id="deleteByPrimaryKey">
+    update schedule
+    set
+      schedule_state = 0
+    where schedule_id = #{sceduleId,jdbcType=BIGINT}
+  </update>
+</mapper>
